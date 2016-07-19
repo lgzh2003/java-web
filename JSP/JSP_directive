@@ -1,0 +1,204 @@
+Jsp包含三个编译指令和七个动作指令。
+三个编译指令为：page、include、taglib。
+
+七个动作指令为：jsp:forward、jsp:param、jsp:include、jsp:plugin、jsp:useBean、jsp:setProperty、jsp:getProperty。
+
+一、编译指令
+
+1、 page指令
+
+a. 通常位于jsp页面的顶端，同一个页面可以有多个page指令。语法格式如下： 
+
+〈% @page
+
+[language="Java"]
+
+[extends="package.class"]
+
+[import= "package. class I package. *},…"]
+
+[session="true I false"]
+
+[buffer="none I 8kb I size kb" 1
+
+[autoFlush="true I false"]
+
+[isThreadSafe="true I false"]
+
+[info="text"]
+
+[errorPage="relativeURL"]
+
+[contentType="mimeType[ ;charset=characterSet]" I"text/html;charset= "808859-1"]
+
+[isErrorPage=" true I false"]
+
+%〉
+
+1)language属性，一般情况就是java，代表jsp页面使用的脚本语言。
+
+2)Extends属性，确定 JSP 程序编译时所产生的 Java 类，需要继承的父类，或者需要实现的接口的全限定类名。
+
+1.import属性，用来导入包，下面几个包是默认自动导入的，不需要显式导入。默认导入的包有: 
+
+java.lang.* 
+
+javax.servlet.* 
+
+javax.servlet.jsp.* 
+
+javax.servlet.http.*
+
+2.Session属性，设定这个 JSP 页面是否需要 HTIP session 。
+
+3.buffer属性，指定输出缓冲区的大小。输出缓冲区的 JSP 内部对象: out 用于缓存 JSP页面对客户浏览器的输出，默认值为 8kb，可以设置为 none ，也可以设置为其他值，单位为kb
+
+4.autoFlush属性，当输出缓冲区即将溢出时，是否需要强制输出缓冲区的内容。设置为true 时为正常输出；如果设置为 false ，会在 buffer 溢出时产生一个异常。
+
+5.Info属性，设置该 JSP 程序的信息，也可以看做其说明，可以通过 Servlet. getServletInfo()方法获取该值。如果在 JSP 页面中，可直接调用 getServletInfoO方法获取该值，因为 JSP 页面的实质就是 Servlet 。
+
+errorPage属性，指定错误处理页面。如果本程序产生了异常或者错误，而该 JSP 页面没有对应的处理代码，则会自动调用该指令所指定的 JSP 页面。使用 JSP 页面时，可以不处理异常，即使是 checked 异常。（重定向到对应的错误处理页面，但是URL还是原来的URl，并不发生变化）如果这个页面不存在这个属性，那么一旦代码出现问题，就会在开发环境和IE浏览器上提示错误。可见这条属性控制异常处理的效果在表现形式上要好的多。
+
+6.IsErrorPage属性，设置本 JSP 页面是否为错误处理程序。如果该页面本身己是错误处理页面，则无须使用 errorPage 属性。
+
+7.ContentType属性，用于设定生成网页的文件格式和编码方式，即 MIME 类型和页面字符集类型，默认的 MIME 类型是 text/html; 默认的字符集为 ISO-8859-1 。
+
+2、 include指令
+
+    使用 include 指令，可以将一个外部文件嵌入到当前 JSP 文件中，同时解析这个页面中的 JSP 语句(如果有的话)。这是个静态的 include 语旬，不会检查所包含 JSP 页面的变化。
+
+    include 既可以包含静态的文本，也可以包含动态的 JSP 页面。静态的编译指令include ，是将被包含的页面加入进来，生成一个完整的页面。
+
+include 编译指令的语法:
+
+〈% @include file="relativeURLSpec" %〉
+
+    如果被嵌入的文件经常需要改变，建议使用<jsp:include>操作指令，因为它是动态的 include 语句。
+
+    包含include指令的jsp页面在部署后，经过访问编译生成java文件，在tomcat的 work\Catalina\localhost\project\org\apache\jsp目录下会生成对应的java文件，这些文件与jsp的名字相同，他包含了编译后的代码，甚至include包含的另外一个jsp的代码也被相应的加入了进来。
+
+二、 动作指令
+
+1、 forward指令：forward 指令用于将页面响应控制转发给另外的页面。既可以转发给静态的 HTML页面，也可以转发到动态的 JSP 页面，或者转发到容器中的 Servlet。
+
+JSP 的 forward 指令的格式如下:
+
+对于 JSP 1. 0 ，使用如下语法: 
+
+<jsp:forward page=”{relativeURL |<%=expression%>}” />
+
+可使用如下语法:
+
+<jsp:forward page=”{relativeURL |<%=expression%>}”>
+
+{<jsp:param…/>}
+
+</jsp:forward>
+
+第二种语法用于在转发时增加额外的请求参数。增加的请求参数的值可以通过HttpServletRequest 类的 getParameter方法获取。
+
+2、 include指令，它是一个动态的指令，可以用于导入某个页面。它的导入会每次检查被导入页面的改变。下面是include指令的使用格式：
+
+<jsp:include page=”{relativeURL |<%=expression%>}” flush=”true” />
+
+或者：
+
+<jsp:include page=”{relativeURL |<%=expression%>}” flush=”true”>
+
+<jsp:param name=”paramName” value=”paramValue”/>
+
+</jsp:include>
+
+flush 属性用于指定输出缓存是否转移到被导入文件中。如果指定为剧。则包含在被导入文件中；如果指定为false，则包含在原文件中。对于JSP 1.1以下的旧版本，只能设置为false。
+
+<include>和<jsp:include>分别为静态导入和动态导入。他们的的区别:静态导入是将被导入页面的代码完全插入，两个页面生成一个整体的 Servlet; 而动态导入则在 Servlet 中使用动态导入，从而将页面引入。
+
+3、 useBean、setProperty和getProperty指令
+
+这三个指令都是与JavaBean相关的指令，其中useBean用于在jsp页面初始化一个java实例，setProperty用于修改JavaBean实例的属性，getProperty用于获取JavaBean实例的属性。
+
+useBean的语法格式：
+
+<jsp:useBean id=”” class=”” scope=”page | request |session | application” >
+
+Id是JavaBean的实例名，class属性确定JavaBean的实现类。Scope属性确定生存范围【页面、请求、会话、应用】
+
+setProperty的语法格式：
+
+<jsp:setProperty name=”” property=”” value=”” />
+
+Name属性确定需要设定
+
+4、 plugin指令
+
+plugin 指令主要用于下载服务器端的 JavaBean 或 Applet 到客户端执行。由于程序在客户端执行，因此客户端必须安装虚拟机。
+
+plugin 的语法格式如下:
+
+<jsp:plugin type=”bean | applet"
+
+code="classFileName"
+
+codebase="classFileDiretoryName"
+
+[name=" instanceName"]
+
+[archive="URLtoArchive"]
+
+[align= "bottom I top I middle I left I right"]
+
+[heigh="displayPixels"]
+
+[width="displayPixels"]
+
+[hspace="leftRightPixels"]
+
+[vspace="topBottomPiexels"]
+
+[jreversion=JREVersionNumber|1.2"]
+
+[nspluginurl="URLToPlugin"]
+
+[iepluginurl="URLToPlugin"]>
+
+[<jsp:parames>
+
+[jsp:param name="parameterName" value="parameterValue" />]
+
+</jsp:params>]
+
+[<jsp:fallback>text message for user that can no see the plugin
+
+</jsp:fallback> ]
+
+</jsp:plugin>
+
+这些属性的说明如下：
+
+Type: 指定被执行的java程序的类型，是一个bean还是一个applet
+
+Code: 指定被执行的文件名，该属性值必须以“.class”扩展名结尾
+
+Codebase: 指定被执行的文件目录。
+
+Name: 给该程序起一个名字用来标识该程序。
+
+Archive: 指向一些要预先载入的将要使用到的类的路径。
+
+Hspace,Vspace: 显示左右上下的留白。
+
+jreversion: 能正确运行改程序必须的JRE版本。
+
+Nsplugin，ieplugin: Netscape Navigator, Internet Exploer 下载运行所需JRE 的地址。
+
+<jsp:fallback>指令：当不能正确显示该applet时，代替显示的提示信息。
+
+5、 param指令
+
+param指令用于设置参数值，这个指令本身不能单独使用，因为单独使用没有意义。它可以和以下几个指令合起来使用
+
+jsp:include
+
+jsp:forward
+
+jsp:plugin
