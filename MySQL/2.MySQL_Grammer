@@ -1,0 +1,128 @@
+创建数据库：
+CREATE DATABASE   --DATABASE 或者 SCHEMA数据库集合
+IF NOT EXISTS db_name
+CHARACTER SET utf8
+COLLATE utf8_general_ci
+
+删除数据库 :
+DROP DATABASE db_name;
+
+创建数据表：
+CREATE TABLE IF NOTEXISTS tb_name(
+id int(5)
+UNSIGNED  --无符号
+ZEROFILL --填满0
+NOT NULL --不允许为空
+AUTO_INCREMENT --主键自动增长
+COMMENT '注释',
+
+PRIMARY KEY (field1, field2), --定义主键
+        INDEX key_name USING BTREE (field3)--定义索引
+        --UNIQUE INDEX | FULLTEXT INDEX 唯一 与  全文
+        --BTREE | HASH 索引方式
+
+--定义外键
+CONSTRAINT key_name FOREIGN KEY (field1) REFERENCES db.tb(field2)
+ON DELETE SET NULL --删除时的事件
+ON UPDATE RESTRICT --更新时的事件
+
+)ENGINE=MyISAM --引擎
+DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci --字符编码   与   校对编码
+COMMENT='表注释'
+AUTO_INCREMENT=5 --默认自动增长量为1
+CHECKSUM=1 --每行维持一个校验和,会使表更新变得更慢,但它更容易找出损坏的表
+ROW_FORMAT=DEFAULT --行格式
+AVG_ROW_LENGTH=77 --表的平均行长度近似值，你只需为有变长记录的表设置。
+MAX_ROWS=9 --表中存储的最大行数9
+MIN_ROWS=3 -- 表中存储的最小行数3
+PACK_KEYS=1 --封装键
+DELAY_KEY_WRITE=1 --推迟关键表的更新直到表被关闭
+DATA DIRECTORY='' --数据目录
+INDEX DIRECTORY='' --索引目录
+;
+
+清空数据表两种方法：
+TRUNCATE TABLE db.tb;
+DELETE FROM db.tb;
+
+删除数据表：
+DROP db.tb;
+
+另外，还可以这样新建表：
+CREATE TABLE IF NOTEXISTS tb_new(SELECT * FROM db.table1); --复制另一张表的内容，填充到新表，若新表重名，则省略创建过程，直接插入数据。
+CREATE TABLE IF NOTEXISTS tb_new(LIKE db.table1); --复制另一表的结构。
+
+
+修改表结构：
+ALTER TABLE db.table1
+ADD COLUMN new_field int(5) NOT NULL AFTER field2; --添加字段
+
+ALTER TABLE db.table1 
+CHANGE COLUMN field_name new_field_name  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `id`; --修改字段
+
+ALTER TABLE db.table1 DROP COLUMN field1; --删除字段
+
+ALTER TABLE db.table1 ADD UNIQUE INDEX index_name USING BTREE (field1); --添加索引
+
+ALTER TABLE db.table1
+DROP PRIMARY KEY, --删除主键
+ADD PRIMARY KEY (id); --修改主键
+
+ALTER TABLE db.table1
+DROP INDEX index_name, --删除索引
+ADD FULLTEXT INDEX index_name USING BTREE (field1); --添加索引
+
+插入语句：
+INSERT INTO table1 VALUES (value1, value2, valueAll);
+INSERT INTO table1(field1, field2) VALUES (value1, value2);
+
+更新语句：
+UPDATE table1 SET  field1='value1', field2='value2' WHERE field3='value3';
+
+删除语句：
+DELETE FROM table1 WHERE field1='value1';
+
+SELECT 语句：
+
+SELECT DISTINCT field1, field2 FROM table1;
+DISTINCT --值不重复
+
+SELECT * FROM table1 WHERE field1='value';
+
+=、<>、>、<、>=、<=  --这些个，不解释
+BETWEEN 'A' AND 'C' --限定范围，即：徘徊于牛A与牛C之间。
+IN('value1','value2','value3') --限定值
+LIKE '%abc%'  --模糊查询
+%  --替代n个字符
+_  --替代一个字符
+[abcd] --限定为字符列表中的任一的字符
+[^abcd] 或 [!abcd] --限定为排除字符列表中的任一的字符
+
+SELECT * FROM table1 WHERE (field1='value1' OR field2='value2') AND field3='[abc]%';
+
+SELECT * FROM table1 ORDER BY field1 DESC, field2 ASC; --若两个字段排序规则相同：ORDER BY filed1, filed2 DESC
+
+SELECT * FROM table1 LIMIT start, length; --查询指定的记录
+SELECT TOP 10 PERCENT * FROM table1; --这是标准的SQL语句，查得前百分之十的记录，不加 PERCENT 则是前10条
+
+SELECT t1.field1, t2.field2 FROM table1 AS t1, table2 AS t2  WHERE t1.field2=t2.field3; --表取别名
+
+SELECT field1 AS f1 FROM table1;  --字段取别名
+
+SELECT * FROM table1 AS t1 FULL JOIN table2 AS t2; --无条件完全组合在一起
+SELECT * FROM table1 AS t1 INNER JOIN table2 AS t2 ON t1.field1=t2.field1; --内连接，查询满足条件的记录（也可直接写JOIN）。
+
+SELECT * FROM table1 AS t1 LEFT JOIN table2 AS t2 ON t1.field1=t2.field1; 
+--查询的表排列的顺序是从左到右，这是左连接，故以左边的表为主表，即：返回所有满足条件的记录，而主表中不满足条件的记录同样返回。
+
+SELECT * FROM table1 AS t1 RIGHT JOIN table2 AS t2 ON t1.field1=t2.field1; --同理于上，反之而行
+
+SELECT field1, field2 FROM table1 UNION SELECT field1, field2 FROM table2; --联合两张表的查询结果，要求查询字段必然数量相等
+SELECT field1, field2 FROM table1 UNION ALL SELECT field1, field2 FROM table2; --上面不显示重复值，加上 ALL 表示全部
+
+SELECT field1, field2 INTO table2 FROM table1 WHERE table1.field3='value'; --拷贝表的效果
+SELECT * INTO table2 IN  'Backup.mdb' FROM table1; --向另一个数据库中拷贝表
+
+SELECT field1, SUM(field2) FROM table1 GROUP BY field3; --用于结合合计函数，根据一个或多个列对结果集进行分组。
+
+SELECT filed1,SUM(field2) FROM table1 HAVING SUM(OrderPrice)<2000; --WHERE无法与合计函数一起使用 ,HAVING 应运而生。
