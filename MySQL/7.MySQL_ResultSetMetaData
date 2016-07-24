@@ -1,0 +1,223 @@
+DatabaseMetaData 有关整个数据库的信息：表名、表的索引、数据库产品的名称和版本、数据库支持的操作。 
+
+ResultSet 关于某个表的信息或一个查询的结果。您必须逐行访问数据行，但是您可以任何顺序访问列。 
+
+ResultSetMetaData 有关 ResultSet 中列的名称和类型的信息。 
+
+尽管每个对象都有大量的方法让您获得数据库元素的极为详细的信息，但在每个对象中都有几种主要的方法使您可获得数据的最重要信息。然而，如果您希望看到比此处更多的信息，建议您学习文档以获得其余方法的说明。 
+
+
+
+1.ResultSet 
+
+ResultSet 对象是 JDBC 中最重要的单个对象。从本质上讲，它是对一个一般宽度和未知长度的表的一种抽象。几乎所有的方法和查询都将数据作为 ResultSet 返回。ResultSet 包含任意数量的命名列，您可以按名称访问这些列。它还包含一个或多个行，您可以按顺序自上而下逐一访问。在您使用 ResultSet 之前，必须查询它包含多少个列。此信息存储在 ResultSetMetaData 对象中。 
+
+//从元数据中获得列数 
+ResultSetMetaData rsmd; 
+rsmd = results.getMetaData(); 
+numCols = rsmd.getColumnCount(); 
+
+当您获得一个 ResultSet 时，它正好指向第一行之前的位置。您可以使用 next() 方法得到其他每一行，当没有更多行时，该方法会返回 false。由于从数据库中获取数据可能会导致错误，您必须始终将结果集处理语句包括在一个 try 块中。 
+
+您可以多种形式获取 ResultSet 中的数据，这取决于每个列中存储的数据类型。另外，您可以按列序号或列名获取列的内容。请注意，列序号从 1 开始，而不是从 0 开始。ResultSet 对象的一些最常用方法如下所示。 
+
+getInt(int); 将序号为 int 的列的内容作为整数返回。 
+
+getInt(String); 将名称为 String 的列的内容作为整数返回。 
+
+getFloat(int); 将序号为 int 的列的内容作为一个 float 型数返回。 
+
+getFloat(String); 将名称为 String 的列的内容作为 float 型数返回。 
+
+getDate(int); 将序号为 int 的列的内容作为日期返回。 
+
+getDate(String); 将名称为 String 的列的内容作为日期返回。 
+
+next(); 将行指针移到下一行。如果没有剩余行，则返回 false。 
+
+Close(); 关闭结果集。 
+
+getMetaData(); 返回 ResultSetMetaData 对象。 
+
+ResultSetMetaData 
+
+您使用 getMetaData() 方法从 ResultSet 中获取 ResultSetMetaData 对象。您可以使用此对象获得列的数目和类型以及每一列的名称。 
+
+getColumnCount(); 返回 ResultSet 中的列数。 
+getColumnName(int); 返回列序号为 int 的列名。 
+getColumnLabel(int); 返回此列暗含的标签。 
+isCurrency(int); 如果此列包含带有货币单位的一个数字，则返回 true。 
+isReadOnly(int); 如果此列为只读，则返回 true。 
+isAutoIncrement(int); 如果此列自动递增，则返回 true。这类列通常为键，而且始终是只读的。 
+getColumnType(int); 返回此列的 SQL 数据类型。这些数据类型包括 
+
+BIGINT 
+BINARY 
+BIT 
+CHAR 
+DATE 
+DECIMAL 
+DOUBLE 
+FLOAT 
+INTEGER 
+LONGVARBINARY 
+LONGVARCHAR 
+NULL 
+NUMERIC 
+OTHER 
+REAL 
+SMALLINT 
+TIME 
+TIMESTAMP 
+TINYINT 
+VARBINARY 
+VARCHAR 
+
+2.DatabaseMetaData 
+
+DatabaseMetaData 对象可为您提供整个数据库的信息。您主要用它获取数据库中表的名称，以及表中列的名称。由于不同的数据库支持不同的 SQL 变体，因此，也有多种方法查询数据库支持哪些 SQL 方法。 
+
+getCatalogs() 返回该数据库中的信息目录列表。使用 JDBC-ODBC Bridge 驱动程序，您可以获得用 ODBC 注册的数据库列表。这很少用于 JDBC-ODBC 数据库。 
+
+getTables(catalog, schema,tableNames, columnNames) 返回表名与 tableNames 相符而且列名与 columnNames 相符的所有表的说明。 
+
+getColumns(catalog, schema,tableNames, columnNames) 返回表名与 tableNames 相符而且列名与 columnNames 相符的所有表列说明。 
+
+getURL(); 获得您所连接的 URL 名称。 
+
+getDriverName(); 获得您所连接的数据库驱动程序的名称。 
+
+获取有关表的信息 
+
+您可以使用 DataBaseMetaData 的 getTables() 方法来获取数据库中表的信息。这个方法有如下4个 String 参数： 
+
+results =dma.getTables(catalog, schema, tablemask, types[]); 
+
+其中参数的意义是： 
+
+Catalog 要在其中查找表名的目录名。对于 JDBC-ODBC 数据库以及许多其他数据库而言，可将其设置为 null。这些数据库的目录项实际上是它在文件系统中的绝对路径名称。 
+
+Schema 要包括的数据库“方案”。许多数据库不支持方案，而对另一些数据库而言，它代表数据库所有者的用户名。一般将它设置为 null。 
+
+Tablemask 一个掩码，用来描述您要检索的表的名称。如果您希望检索所有表名，则将其设为通配符 %。请注意，SQL 中的通配符是 % 符号，而不是一般 PC 用户的 * 符号。 
+
+types[] 这是描述您要检索的表的类型的 String 数组。数据库中通常包括许多用于内部处理的表，而对作为用户的您没什么价值。如果它是空值，则您会得到所有这些表。如果您将其设为包含字符串“TABLES”的单元素数组，您将仅获得对用户有用的表格。 
+
+一个简单的 JDBC 程序 
+
+我们已经学习了 JDBC 的所有基本功能，现在我们可以编写一个简单的程序，该程序打开数据库，打印它的表名以及某一表列的内容，然后对该数据库执行查询。此程序如下所示： 
+
+package skydevkit; 
+import java.sql.*; 
+public class JdbcOdbc_test { 
+ResultSet results; 
+ResultSetMetaData rsmd; 
+DatabaseMetaData dma; 
+Connection con; 
+
+public JdbcOdbc_test() throws SQLException { 
+String url = "jdbc:odbc:Northwind"; 
+try { 
+//加载 JDBC-ODBC 桥驱动程序 
+Class.forName("sun.jdbc.odbc.JdbcOdbcDriver"); 
+con = DriverManager.getConnection(url);//连接数据库 
+dma = con.getMetaData();//获取数据库的元数据 
+System.out.println("Connected to:" + dma.getURL()); 
+System.out.println("Driver " + dma.getDriverName()); 
+} catch (Exception e) { 
+System.out.println(e); 
+} 
+try { 
+Statement stmt = con.createStatement(); 
+results = stmt.executeQuery("select * from 客户;"); 
+ResultSetMetaData resultMetaData = results.getMetaData(); 
+int cols = resultMetaData.getColumnCount(); 
+String resultRow = ""; 
+for (int i = 1; i < cols; i++) { 
+resultRow += resultMetaData.getColumnName(i) + ";"; 
+} 
+System.out.println(resultRow); 
+while (results.next()) { 
+resultRow = ""; 
+for (int i = 1; i < cols; i++) { 
+try { 
+resultRow += results.getString(i) + ";"; 
+} catch (NullPointerException e) { 
+System.out.println(e.getMessage()); 
+} 
+} 
+System.out.println(resultRow); 
+} 
+} catch (Exception e) { 
+System.out.println("query exception"); 
+} finally { 
+results.close(); 
+} 
+} 
+} 
+
+补充高级内容 
+
+关于调用SQLServer存储过程的例子：（用到了我们开发的数据库连接类） 
+
+CREATE PROCEDURE [dbo].[sp_getStudentByName](@name char(10)) 
+AS 
+Select * from Students where [Name]=@name 
+GO 
+
+DbObject DbO = new DbObject(new SqlServerConnectionFactory("localhost", 
+1433, "demo", "sa", "")); 
+Connection con = DbO.getConnection(); 
+CallableStatement pstmt = null; 
+System.out.println("TestDB1()............"); 
+/* try { 
+pstmt = con.prepareCall("{call sp_getStudentById(?)}"); 
+pstmt.setInt(1, 1); 
+}*/ 
+try { 
+pstmt = con.prepareCall("{call sp_getStudentByName(?)}"); //注意参数如何传递 
+pstmt.setString(1, "Tom"); 
+} 
+…… 
+
+使用输出参数： 
+
+CREATE PROCEDURE [dbo].[sp_insertStudent](@name char(10),@age int,@id int OUTPUT) AS 
+insert into Students([Name],[Age]) values (@name,@age) 
+select @id=@@IDENTITY 
+GO 
+
+try { 
+pstmt = con.prepareCall("{call sp_insertStudent(?,?,?)}"); 
+pstmt.setString(1, "zengqingsong"); 
+pstmt.setInt(2, 22); 
+
+pstmt.registerOutParameter(3, Types.INTEGER); 
+pstmt.executeUpdate(); 
+
+int id = pstmt.getInt(3); 
+System.out.println(id); 
+} 
+
+使用返回参数的例子： 
+
+CREATE PROCEDURE [dbo].[sp_insertStudent](@name char(10),@age int,@id int OUTPUT) AS 
+insert into Students([Name],[Age]) values (@name,@age) 
+select @id=@@IDENTITY –测试输出参数 
+return 30 –测试返回30 
+GO 
+
+try { 
+pstmt = con.prepareCall("{?=call sp_insertStudent(?,?,?)}"); 
+pstmt.setString(2, "zengqingsong"); 
+pstmt.setInt(3, 22); 
+
+pstmt.registerOutParameter(4, Types.INTEGER); 
+pstmt.registerOutParameter(1, Types.INTEGER); 
+int ret = pstmt.executeUpdate(); //执行影响的行数 
+
+int ret2 = pstmt.getInt(1); //返回参数（输出参数） 
+int id = pstmt.getInt(4); //输出参数 
+System.out.println(ret); 
+System.out.println(ret2); 
+System.out.println(id);
