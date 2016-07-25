@@ -1,0 +1,93 @@
+Important and useful terms related to Software Testing area
+
+单元测试:Unit Testing
+驱动单元:driver
+桩单元:Stub
+集成测试:Integration Testing
+系统测试:System Testing
+性能测试:Performance Testing
+压力测试:Stress Testing
+容量测试:Volume Testing
+回归测试:Regression Testing
+冒烟测试/预测试:Smoke Testing
+安全测试:Security Testing
+保护测试:Protectiion Testing
+界面测试:GUI Testing,Graphic User Interface
+可用性测试:Usability Testing
+可安装性测试:Installation Testing
+备份测试:Backup Testing
+健壮性测试:Robustness Testing
+文档测试:Documentation Testing
+在线帮助测试:Online Help Testing
+验收测试:User Acceptance Testing
+人工/手动测试:Manual Testing
+自动化测试:Automation Testing
+需求规格说明书:SRS,Software Requirement Specitication
+详细设计:LLD
+概要设计:HLD
+双V模型:Verification 验证,Validation 确认
+质量:Quality
+流程:Flow
+ISO:International Organization for Standardization
+CMM:Capability Maturity Model
+CMMI:Capability Maturity Model Integration
+关键过程域:KPA,Key Process Area
+软件质量六大特性:
+1,功能性:functionality
+     适合性:suitability
+     准确性:accuracy
+     互操作性:interoperability
+     保密安全性:security
+     功能性的依从性:functionality compliance
+2,可靠性:reliability
+     成熟性:maturity
+     容错性:fault tolerance
+     易恢复性:recoverability
+     可靠性的依从性:reliability compliance
+3,易用性: usability
+     易理解性:understandability
+     易学性:learnability
+     易操作性:operability
+     吸引性:attractiveness
+     易用性的依从性:usability compliance
+4,效率:efficiency
+     时间特性:time behavior
+     资源利用性:resource utilization
+     效率依从性:efficiency compliance
+5,可维护性:maintainability
+     易分析性:analyzability
+     易改变性:changeability
+     稳定性:stability
+     易测试性:testability
+     维护性的依从性:maintainability compliance
+6,可移植性:portability
+     适应性:adaptability
+     易安装性:installability
+     共存性:co-existence
+     易替换性:replaceability
+     可移植性的依从性:portability compliance
+
+白盒测试:white Box Testing=玻璃盒测试:glass Box testing=透明盒测试:Clear Box Testing=基于代码测试:Code-Based Testing=逻辑驱动测试:Logisc-Driven Testing
+
+黑盒测试:Black Box Testing=功能测试:Function Testing
+
+软件缺陷状态
+New:缺陷的初始状态
+Open:开发人员开始修改缺陷
+Fixed:开发人员修改缺陷完毕
+Closed:回归测试通过
+Reopen回归测试失败
+Rostpone:推迟修改
+Rejected:开发人员认为不是程序问题,拒绝缺陷
+Duplicate:与已经提交的Defect重复
+Abandon:被Rejrect 和Duplicate的Defect,测试人员确认后的确不是问题,将Defect置为此状态
+
+逻辑覆盖率:Logical Coverage=代码覆盖率:Code coverage=结构化覆盖率:Structural Coverage
+语句覆盖率:Statement Coverage,
+判定覆盖:Decision Coverage=分支覆盖:Branch Coverage
+条件覆盖:Condition Coverage
+判定条件覆盖:Decision Condition Coverage=分值条件:Branch Condition Coverage,BC Coverage
+路径覆盖:Path Coverage
+指令覆盖:Instruction Blocks Coverage, IB Coverage
+判定路径覆盖:Decision-to-Decision Paths Coverage,DDP Coverage
+功能覆盖率:Function Coverage
